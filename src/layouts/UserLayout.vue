@@ -69,7 +69,7 @@
         </q-img>
       </q-drawer>
 
-      <q-page-container  >
+      <q-page-container style="margin:50px">
         <router-view/>
       </q-page-container>
     </q-layout>

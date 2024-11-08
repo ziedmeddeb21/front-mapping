@@ -1,4 +1,6 @@
 export default{
     mappingRules: [],
-    mappingRule: {}
+    mappingRule: {},
+    outputJson:{},
+    mappingRuleCollections: []
 }

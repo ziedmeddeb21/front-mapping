@@ -9,18 +9,21 @@ const producer = axios.create({
 });
 
 const consumerApi = {
-    getMappingRules: () => {
-        return consumer.get('/mapping-rule');
+    getMappingRules: (collectionName) => {
+        return consumer.get(`/mapping-rule/${collectionName}`);
     },
     getMappingRule: (id) => {
-        return consumer.get(`/mapping-rule/${id}`);
+        return consumer.get(`/mapping-rule/byId/${id}`);
     },
+    getMappingRuleCollections: () => {
+        return consumer.get(`/mapping-rule/collection-names`);
+    }
 
 }
 
     const producerApi = {
-        sendJson: (data) => {
-            return producer.post('/send-json', data);
+        sendJson: (data, collectionName) => {
+            return producer.post(`/send-json/${collectionName}`, data);
     }
 
 }

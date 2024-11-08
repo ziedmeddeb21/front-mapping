@@ -10,6 +10,7 @@ import { install as VueMonacoEditorPlugin } from '@guolao/vue-monaco-editor'
 import Toast from "vue-toastification";
 // Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
+import {createPinia} from "pinia";
 
 createApp(App)
     .use(Quasar, {
@@ -18,6 +19,7 @@ createApp(App)
         } // import Quasar plugins and add here
       })
     .use(Toast)
+    .use(createPinia())
     .use(VueMonacoEditorPlugin,{
         languages: ['json'],
         features: ['coreCommands', 'find', 'format', 'suggest', 'quickCommand', 'quickOutline', 'quickOutlineBySymbol', 'quickCommand'],
