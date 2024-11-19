@@ -35,11 +35,6 @@
     </div>
   </div>
 
-
-<!--  <pre>{{mappingRules}}</pre>-->
-
-<!--<button @click="getMappingRules">Format</button>-->
-<!--<button @click="getMappingRule">Get Mapping Rule</button>-->
   <div style="text-align: center;"> <button class="pushable" @click="sendJson">
     <span class="shadow"></span>
     <span class="edge"></span>
@@ -52,11 +47,15 @@
 
 <script lang="ts" setup>
 import {computed, ref, shallowRef} from 'vue'
-import store from '../store'
 import { useToast } from 'vue-toastification'
 import { watch } from 'vue'
+import { useMappingStore } from '@/store/mappingStore'
+
 
 const selectedOption = ref('mapping_rules');
+const store = useMappingStore()
+
+// --------------------------------------------------------------------------------
 //input edtior
 
 const MONACO_EDITOR_OPTIONS = {
@@ -69,8 +68,10 @@ const code = ref('//Enter input JSON Here...')
 const editorRef = shallowRef()
 const handleMount = editor => (editorRef.value = editor)
 
+// --------------------------------------------------------------------------------
 //output editor
 
+const output = ref('//Output JSON will be displayed here...')
 const Editor_Output ={
   automaticLayout: true,
   formatOnType: true,
@@ -80,60 +81,50 @@ const Editor_Output ={
 }
 
 
-const mappingRules= computed(()=>store.state.mappingRules)
-
-const output = ref('//Output JSON will be displayed here...')
 // --------------------------------------------------------------------------------
 // functions
 
-function getMappingRules(){
-  store.dispatch('getMappingRules');
-}
-
 function getMappingRulesCollection(){
-  store.dispatch('getMappingRuleCollections');
+  store.getMappingRuleCollections()
 }
+getMappingRulesCollection();
 
- getMappingRulesCollection();
-const mappingRulesCollection= computed(()=>store.state.mappingRuleCollections)
+const mappingRulesCollection= computed(()=>store.$state.mappingRuleCollections)
 
-function getMappingRule(id){
-  store.dispatch('getMappingRule',"6721f247f6649219e17d4ca8");
-
-}
 
 async function sendJson() {
   try {
-    await store.dispatch('clearOutputJson');
+    store.clearOutputJson(); // Clear the outputJson state
     const jsonData = JSON.parse(code.value);
-    await store.dispatch('sendJson', {content:jsonData,collection:selectedOption.value});
-    showNotifSuccess('JSON sent successfully!');
-
+    await store.sendJson(jsonData, selectedOption.value);
+    showNotifSuccess('JSON Converted Successfully!');
   } catch (error) {
-    showNotifError('Invalid JSON!');
-
+    store.clearOutputJson(); // Ensure outputJson is empty on error
+    showNotifError('An Error Occurred! ' + error.message);
   }
 }
 
 
 
-watch(() => store.state.outputJson, (newValue) => {
+watch(() => store.$state.outputJson, (newValue) => {
   output.value = JSON.stringify(newValue, null, 2)
 })
 
 
 
 
+// --------------------------------------------------------------------------------
+// notif
 
 const toast = useToast()
 
 function showNotifError(message) {
   toast.error(message, {
     position: 'top-center',
-    timeout: 2000,
+    timeout: 3000,
     closeOnClick: true,
     pauseOnFocusLoss: false,
-    pauseOnHover: false,
+    pauseOnHover: true,
     draggable: true,
     draggablePercent: 0.6,
     showCloseButtonOnHover: false,
@@ -175,7 +166,7 @@ function showNotifSuccess(message) {
 <style scoped>
 
 .editor-button-container{
-  background: #1e1e1e;
+  //background: #1e1e1e;
 }
 
 .editor-container {
@@ -280,6 +271,8 @@ function showNotifSuccess(message) {
 .pushable:focus:not(:focus-visible) {
   outline: none;
 }
+
+
 
 
 </style>

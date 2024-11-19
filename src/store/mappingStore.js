@@ -36,6 +36,7 @@ export const useMappingStore = defineStore('mapping', {
         async getMappingRules(collectionName) {
             try {
                 const { data } = await consumerApi.getMappingRules(collectionName)
+
                 this.setMappingRules(data)
             } catch (error) {
                 console.error('Error fetching mapping rules:', error)
@@ -60,13 +61,38 @@ export const useMappingStore = defineStore('mapping', {
             }
         },
 
-        async sendJson(data) {
+        async sendJson(data,collectionName) {
             try {
-                const { data: responseData } = await producerApi.sendJson(data.content, data.collection)
+                const { data: responseData } = await producerApi.sendJson(data, collectionName)
                 this.setOutputJson(responseData)
             } catch (error) {
                 console.error('Error sending JSON:', error)
             }
+        },
+
+        async createMappingRule(collectionName, data) {
+            try {
+                await consumerApi.createMappingRule(collectionName, data)
+            } catch (error) {
+                console.error('Error creating mapping rule:', error)
+            }
+        },
+
+        async updateMappingRule(collectionName, id, data) {
+            try {
+                await consumerApi.updateMappingRule(collectionName, id, data)
+            } catch (error) {
+                console.error('Error updating mapping rule:', error)
+            }
+        },
+        async deleteMappingRule(collectionName, id) {
+            try {
+                await consumerApi.deleteMappingRule(collectionName, id)
+            } catch (error) {
+                console.error('Error deleting mapping rule:', error)
+            }
         }
     }
+
+
 })

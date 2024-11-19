@@ -3,7 +3,7 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/index.js'
-import {Quasar} from 'quasar'
+import {Dialog, Quasar} from 'quasar'
 import 'quasar/dist/quasar.css'
 import '@quasar/extras/material-icons/material-icons.css'
 import { install as VueMonacoEditorPlugin } from '@guolao/vue-monaco-editor'
@@ -15,7 +15,7 @@ import {createPinia} from "pinia";
 createApp(App)
     .use(Quasar, {
         plugins: {
-
+            Dialog
         } // import Quasar plugins and add here
       })
     .use(Toast)
