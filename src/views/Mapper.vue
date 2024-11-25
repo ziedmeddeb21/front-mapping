@@ -1,12 +1,15 @@
 <template >
   <div class="editor-button-container">
+    <q-select rounded filled v-model="selectedOption" :options="mappingRulesCollection" label="Collections" />
 
-    <select v-model="selectedOption">
-      <option v-for="colName in mappingRulesCollection" :value="colName">{{ colName }}</option>
+    <q-file color="white" bg-color="secondary" label-color="white" outlined v-model="file" label="Load File" accept=".json" clearable
+            @update:model-value="handleFileChange"  >
+      <template v-slot:prepend>
+        <q-icon name="attachment" color="white" />
+      </template>
+    </q-file>
 
-
-    </select>
-
+    <q-spinner v-if="isLoading" color="primary" size="50px" />
   <div class="editor-container">
     <div class="editor-wrapper">
       <vue-monaco-editor
@@ -92,15 +95,21 @@ getMappingRulesCollection();
 const mappingRulesCollection= computed(()=>store.$state.mappingRuleCollections)
 
 
+const isLoading = ref(false)
+
 async function sendJson() {
+  if (isLoading.value) return
+  isLoading.value = true
   try {
-    store.clearOutputJson(); // Clear the outputJson state
-    const jsonData = JSON.parse(code.value);
-    await store.sendJson(jsonData, selectedOption.value);
-    showNotifSuccess('JSON Converted Successfully!');
+    store.clearOutputJson()
+    const jsonData = JSON.parse(code.value)
+    await store.sendJson(jsonData, selectedOption.value)
+    showNotifSuccess('JSON Converted Successfully!')
   } catch (error) {
-    store.clearOutputJson(); // Ensure outputJson is empty on error
-    showNotifError('An Error Occurred! ' + error.message);
+    store.clearOutputJson()
+    showNotifError('An Error Occurred! ' + error.message)
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -157,8 +166,21 @@ function showNotifSuccess(message) {
 }
 
 
+const file= ref(null)
+function handleFileChange() {
+  console.log("file changing",file.value)
+  if (file.value && file.value.type === 'application/json') {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      code.value = e.target.result
+    }
+    reader.readAsText(file.value)
+  } else {
 
-
+    file.value = null
+    code.value=''
+  }
+}
 
 </script>
 
@@ -171,18 +193,20 @@ function showNotifSuccess(message) {
 
 .editor-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 
-  padding: 20px;
+  margin: 20px;
   box-sizing: border-box;
   /* Background color to match vs-dark theme */
   border-radius: 8px;
+  border:1px solid black;
+  background-color: #222222;
 }
 
 .editor-wrapper {
-  flex: 1;
+
   margin: 10px;
-  border: 3px solid #ddd;
+
   border-radius: 8px;
 
 }

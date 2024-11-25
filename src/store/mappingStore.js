@@ -7,7 +7,8 @@ export const useMappingStore = defineStore('mapping', {
         mappingRules: [],
         mappingRule: {},
         outputJson: {},
-        mappingRuleCollections: []
+        mappingRuleCollections: [],
+        user: {},
     }),
 
     actions: {
@@ -30,6 +31,10 @@ export const useMappingStore = defineStore('mapping', {
 
         clearOutputJson() {
             this.outputJson = {}
+        },
+
+        setUser(user) {
+            this.user = user
         },
 
         // Actions for API calls
@@ -64,6 +69,7 @@ export const useMappingStore = defineStore('mapping', {
         async sendJson(data,collectionName) {
             try {
                 const { data: responseData } = await producerApi.sendJson(data, collectionName)
+                console.log(responseData)
                 this.setOutputJson(responseData)
             } catch (error) {
                 console.error('Error sending JSON:', error)

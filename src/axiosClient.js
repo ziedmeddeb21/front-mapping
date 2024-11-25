@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import keycloak from './keycloak';
 const consumer = axios.create({
     baseURL: 'http://localhost:8081',
 });
@@ -7,6 +7,26 @@ const consumer = axios.create({
 const producer = axios.create({
     baseURL: 'http://localhost:8082',
 });
+consumer.interceptors.request.use((config) => {
+    if(keycloak.token){
+    config.headers.Authorization = `Bearer ${keycloak.token}`;
+    }
+    return config;
+},(error) => {
+    return Promise.reject(error);
+});
+
+producer.interceptors.request.use((config) => {
+    if(keycloak.token){
+    config.headers.Authorization = `Bearer ${keycloak.token}`;
+    }
+    return config;
+},(error) => {
+    return Promise.reject(error);
+});
+
+
+
 
 const consumerApi = {
     getMappingRules: (collectionName) => {

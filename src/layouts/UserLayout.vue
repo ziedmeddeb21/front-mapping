@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-layout view="lHh Lpr lff"   class="shadow-2 rounded-borders">
       <q-header elevated class="bg-cyan-8">
-        <q-toolbar>
+        <q-toolbar >
           <q-toolbar-title>JSON Mapping</q-toolbar-title>
           <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         </q-toolbar>
@@ -18,7 +18,7 @@
           <q-list padding>
 
 
-            <q-item  clickable v-ripple to="/user/mapping-rules" tag="router-link" >
+            <q-item  clickable v-ripple to="/mapping-rules" tag="router-link" >
               <q-item-section avatar>
                 <q-icon name="inbox" />
               </q-item-section>
@@ -28,7 +28,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-ripple to="/user/mapper" tag="router-link">
+            <q-item clickable v-ripple to="/mapper" tag="router-link">
               <q-item-section avatar>
                 <q-icon name="swap_horiz" />
               </q-item-section>
@@ -38,13 +38,14 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-ripple>
+
+            <q-item clickable v-ripple @click="confirmDialog">
               <q-item-section avatar>
-                <q-icon name="settings" />
+                <q-icon name="logout" />
               </q-item-section>
 
               <q-item-section>
-                Account
+                Logout
               </q-item-section>
             </q-item>
           </q-list>
@@ -55,8 +56,8 @@
             <q-avatar size="56px" class="q-mb-sm">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
             </q-avatar>
-            <div class="text-weight-bold">Zied Meddeb</div>
-            <div>@TeamWill</div>
+            <div class="text-weight-bold">{{user.name}}</div>
+            <div>{{user.email}}</div>
           </div>
         </q-img>
       </q-drawer>
@@ -70,11 +71,44 @@
 
 <script>
 import { ref } from 'vue'
-
+import keycloak from "@/keycloak.js";
+import { useQuasar } from 'quasar'
+import {useMappingStore} from '@/store/mappingStore.js'
 export default {
   setup () {
+    const $q = useQuasar()
+    const store = useMappingStore()
+  const user = ref(null)
+    function logout() {
+      keycloak.logout();
+
+    }
+    keycloak.loadUserInfo().then(function (userInfo) {
+      store.setUser(userInfo)
+      user.value = userInfo
+    });
+    function confirmDialog () {
+      $q.dialog({
+        title: 'Logout',
+        message: 'Do you want to proceed?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        logout()
+        // console.log('>>>> OK')
+      }).onCancel(() => {
+        // console.log('>>>> Cancel')
+      }).onDismiss(() => {
+        // console.log('I am triggered on both OK and Cancel')
+      })
+    }
+
+
     return {
-      drawer: ref(false)
+      drawer: ref(false),
+      confirmDialog,
+      user
+
     }
   }
 }

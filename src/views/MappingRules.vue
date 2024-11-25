@@ -255,12 +255,22 @@ function prompt () {
     // console.log('I am triggered on both OK and Cancel')
   })
 }
-
+const tip = ref(false)
 
 </script>
 
 <template>
-  <h5 class="page-title">Mapping Rules Management</h5>
+  <div style="display: flex;flex-direction: row;justify-content: center;align-items: baseline">
+  <h5 class="page-title">Mapping Rules Management</h5> <q-icon name="info" color="secondary" class="icons-hover" @click="tip = true" size="20px" style="margin: 10px">
+    <q-tooltip
+
+        transition-show="rotate"
+        transition-hide="rotate"
+    >
+      Info
+    </q-tooltip>
+</q-icon>
+  </div>
   <br>
 
   <div class="container">
@@ -280,17 +290,17 @@ function prompt () {
               <q-input  v-model="formData.source_field" label="Source Field"  filled />
               <q-input ref="targetFieldRef" v-model="formData.target_field" label="Target Field" :rules="targetFieldRules" filled />
               <div class="q-mb-md">
-                <label>isArray</label>
+                <label>Array</label>
                 <q-radio v-model="formData.isArray" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="true" label="Yes" />
                 <q-radio v-model="formData.isArray" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="false" label="No" />
               </div>
               <div class="q-mb-md">
-                <label>belongsToArray</label>
+                <label>Belongs to an Array</label>
                 <q-radio v-model="formData.belongsToArray" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="true" label="Yes" />
                 <q-radio v-model="formData.belongsToArray" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="false" label="No" />
               </div>
               <div class="q-mb-md">
-                <label>isKeyVal</label>
+                <label>Key-Value</label>
                 <q-radio v-model="formData.isKeyVal" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="true" label="Yes" />
                 <q-radio v-model="formData.isKeyVal" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="false" label="No" />
               </div>
@@ -317,17 +327,17 @@ function prompt () {
                 <q-input  v-model="updateFormData.source_field" label="Source Field"  filled :disable="selectedRule === null" />
                 <q-input ref="targetFieldRef" v-model="updateFormData.target_field" label="Target Field" :rules="targetFieldRules" filled :disable="selectedRule === null" />
                 <div class="q-mb-md">
-                  <label>isArray</label>
+                  <label>Array</label>
                   <q-radio v-model="updateFormData.isArray" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="true" label="Yes" :disable="selectedRule === null" />
                   <q-radio v-model="updateFormData.isArray" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="false" label="No" :disable="selectedRule === null" />
                 </div>
                 <div class="q-mb-md">
-                  <label>belongsToArray</label>
+                  <label>Belongs to an Array</label>
                   <q-radio v-model="updateFormData.belongsToArray" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="true" label="Yes" :disable="selectedRule === null" />
                   <q-radio v-model="updateFormData.belongsToArray" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="false" label="No" :disable="selectedRule === null" />
                 </div>
                 <div class="q-mb-md">
-                  <label>isKeyVal</label>
+                  <label>Key-Value</label>
                   <q-radio v-model="updateFormData.isKeyVal" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="true" label="Yes" :disable="selectedRule === null" />
                   <q-radio v-model="updateFormData.isKeyVal" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" :val="false" label="No" :disable="selectedRule === null" />
                 </div>
@@ -335,7 +345,7 @@ function prompt () {
                 <q-input ref="defaultValueRef" v-model="updateFormData.defaultValue" label="Default Value" filled :disable="selectedRule === null" />
                 <div class="q-mt-md">
                   <q-btn color="secondary" label="Update" type="submit" :disable="selectedRule === null" />
-                  <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" :disable="selectedRule === null" />
+                  <q-btn label="Reset Default" type="reset" color="primary" flat class="q-ml-sm" :disable="selectedRule === null" />
                 </div>
               </q-form>
             </q-card-section>
@@ -353,7 +363,7 @@ function prompt () {
               </q-icon> </div>
             </q-card-section>
             <q-card-section>
-              <q-scroll-area style="height: 70vh;">
+              <q-scroll-area style="height: 75vh;">
               <div class="rules-list">
 
                 <q-list padding separator>
@@ -379,6 +389,48 @@ function prompt () {
       </div>
     </q-page>
   </div>
+
+
+  <q-dialog v-model="tip">
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">Infos</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+       <ul>
+  <li><span style="font-weight: bold">Source Field:</span> Specify the path to the field in the input JSON that you want to map. Use <span style="color: blue;">"/"</span> to separate nested fields.
+   <br> If the source node is an <span style="font-weight: bold">array</span> an has a list of values not nested in nodes, use <span style="color: blue;">"*"</span> to select all elements in the array.
+    <br><span style="font-weight: bold">Example:</span> <code >
+      array= ["first value" , "second value", 2]
+      <br>source path :"/path/to/array/*"</code>
+    <br><span style="font-weight: bold">Note:</span> The source field can be null if the target field doesnt use a source field.
+
+  </li>
+         <br><li><span style="font-weight: bold">Target Field:</span> Specify the path to the field in the output JSON where the value should be mapped.
+         Use <span style="color: blue;">"/"</span> to separate nested fields.
+         <br>If the target node is <span style="font-weight: bold">Key/Value</span> pair, add at the end of the of the path the key name and the<span style="font-weight: bold"> value</span>
+         name. <br><span style="font-weight: bold">Example:
+         </span> <code >"/path/to/node/key_name/value_name"</code>
+
+       </li>
+         <br>
+  <li><span style="font-weight: bold">Key-Value:</span> Set to <code>Yes</code> if the mapping involves key-value pairs. Otherwise, set to <code>No</code>.</li>
+  <li><span style="font-weight: bold">Belongs to an Array:</span> Set to <code>Yes</code> if the source field belongs to an array. Otherwise, set to <code>No</code>.</li>
+  <li><span style="font-weight: bold">Array:</span> Set to <code>Yes</code> if the target field should be an array. Otherwise, set to <code>No</code>.</li>
+         <li><span style="font-weight: bold">Normal Node:</span> If the target field is a basic node then set all of the above to <code>No</code>. </li>
+
+         <br><li><span style="font-weight: bold">Script:</span> Optional. Provide a JavaScript script to provide a value based on conditions.</li>
+  <li><span style="font-weight: bold">Default Value:</span> Optional. Provide a default value to use if the source field is missing or there is no script.</li>
+</ul>
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="OK" color="primary" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
 </template>
 
 <style scoped>
@@ -438,4 +490,5 @@ function prompt () {
   text-align: center;
   color: var(--color-heading);
 }
+
 </style>
