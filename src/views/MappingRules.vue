@@ -5,8 +5,8 @@ import {useToast} from 'vue-toastification'
 import { useQuasar } from 'quasar'
 const toast = useToast()
 const store = useMappingStore()
-const selectedOption = ref('new-collection')
-const selectedUpdateOption = ref("new-collection")
+const selectedOption = ref('')
+const selectedUpdateOption = ref("")
 const selectedRule = ref(null)
 const rules = ref([])
 const $q= useQuasar()
@@ -399,7 +399,7 @@ const tip = ref(false)
 
       <q-card-section class="q-pt-none">
        <ul>
-  <li><span style="font-weight: bold">Source Field:</span> Specify the path to the field in the input JSON that you want to map. Use <span style="color: blue;">"/"</span> to separate nested fields.
+  <li><span style="font-weight: bold">Source Field:</span> Optional. Specify the path to the field in the input JSON that you want to map. Use <span style="color: blue;">"/"</span> to separate nested fields.
    <br> If the source node is an <span style="font-weight: bold">array</span> an has a list of values not nested in nodes, use <span style="color: blue;">"*"</span> to select all elements in the array.
     <br><span style="font-weight: bold">Example:</span> <code >
       array= ["first value" , "second value", 2]

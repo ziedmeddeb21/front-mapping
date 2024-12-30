@@ -1,7 +1,7 @@
 import Keycloak from 'keycloak-js';
 
 const keycloak = new Keycloak({
-    url: 'http://localhost:8080',
+    url: 'https://192.168.49.2:31559',
     realm: 'quarkus',
     clientId: 'quarkus-client',
 

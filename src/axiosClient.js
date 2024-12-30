@@ -1,11 +1,11 @@
 import axios from 'axios';
 import keycloak from './keycloak';
 const consumer = axios.create({
-    baseURL: 'http://localhost:8081',
+    baseURL: 'https://api.mapping-json.com/consumer',
 });
 
 const producer = axios.create({
-    baseURL: 'http://localhost:8082',
+    baseURL: 'https://api.mapping-json.com/producer',
 });
 consumer.interceptors.request.use((config) => {
     if(keycloak.token){

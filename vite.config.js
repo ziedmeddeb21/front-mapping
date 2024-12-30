@@ -11,6 +11,7 @@ export default defineConfig({
     vue(),
     quasar()
   ],
+  base: '/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

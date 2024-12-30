@@ -1,6 +1,6 @@
 <template >
   <div class="editor-button-container">
-    <q-select rounded filled v-model="selectedOption" :options="mappingRulesCollection" label="Collections" />
+    <q-select rounded filled v-model="selectedOption" :options="mappingRulesCollection" label="Collections"  />
 
     <q-file color="white" bg-color="secondary" label-color="white" outlined v-model="file" label="Load File" accept=".json" clearable
             @update:model-value="handleFileChange"  >
@@ -55,7 +55,7 @@ import { watch } from 'vue'
 import { useMappingStore } from '@/store/mappingStore'
 
 
-const selectedOption = ref('mapping_rules');
+const selectedOption = ref('');
 const store = useMappingStore()
 
 // --------------------------------------------------------------------------------
